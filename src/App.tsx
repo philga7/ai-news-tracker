@@ -13,38 +13,8 @@ import {
   BookOpen,
   AlertCircle
 } from 'lucide-react';
+import { useNewsStore } from './lib/store';
 import { format } from 'date-fns';
-
-// Mock news data
-const mockNews = [
-  {
-    id: 1,
-    title: "AI Breakthrough: New Model Achieves Human-Level Understanding",
-    source: "Tech Daily",
-    timestamp: new Date(2024, 2, 15, 14, 30),
-    category: "Technology",
-    importance: "high",
-    summary: "Latest AI model demonstrates unprecedented natural language understanding capabilities, marking a significant milestone in artificial intelligence research."
-  },
-  {
-    id: 2,
-    title: "Global Markets React to Economic Policy Changes",
-    source: "Financial Times",
-    timestamp: new Date(2024, 2, 15, 13, 45),
-    category: "Finance",
-    importance: "medium",
-    summary: "Markets show volatility as central banks announce coordinated policy shifts to address inflation concerns."
-  },
-  {
-    id: 3,
-    title: "Renewable Energy Adoption Surpasses Expectations",
-    source: "Green News",
-    timestamp: new Date(2024, 2, 15, 12, 15),
-    category: "Environment",
-    importance: "high",
-    summary: "Global renewable energy implementation exceeds projected targets, signaling accelerated transition to sustainable power sources."
-  }
-];
 
 const trendingTopics = [
   { topic: "Artificial Intelligence", count: 156 },
@@ -54,25 +24,23 @@ const trendingTopics = [
   { topic: "Healthcare Innovation", count: 98 }
 ];
 
-const dailySummary = `Today's news highlights significant developments in AI technology, 
-economic policy changes affecting global markets, and accelerated adoption of renewable energy solutions. 
-Key themes include technological innovation, environmental sustainability, and financial market dynamics.`;
+const dailySummary = `Latest headlines from Citizen Free Press, providing curated news coverage on current events, politics, and trending stories.`;
 
 function App() {
-  const [alerts, setAlerts] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [notifications, setNotifications] = useState(true);
   const [activeSection, setActiveSection] = useState("home");
+  // const [alerts, setAlerts] = useState<string[]>([]);
 
+  // Initialize news store
+  const { cfpArticles, isLoadingCFP, fetchCFPNews } = useNewsStore();
+
+  // Fetch CFP news on component mount
   useEffect(() => {
-    const timer = setInterval(() => {
-      const randomNews = mockNews[Math.floor(Math.random() * mockNews.length)];
-      setAlerts(prev => [...prev, `Breaking: ${randomNews.title}`].slice(-5));
-    }, 10000);
+    fetchCFPNews();
+  }, [fetchCFPNews]);
 
-    return () => clearInterval(timer);
-  }, []);
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const NavItem = ({ icon: Icon, label, section }: { icon: any, label: string, section: string }) => (
     <button
       onClick={() => setActiveSection(section)}
@@ -85,6 +53,10 @@ function App() {
       <span>{label}</span>
     </button>
   );
+
+  if (isLoadingCFP) {
+    return <div>Loading news...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex">
@@ -154,23 +126,24 @@ function App() {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <h2 className="text-xl font-semibold mb-4">Latest Headlines</h2>
                 <div className="space-y-4">
-                  {mockNews.map((news) => (
-                    <div key={news.id} className="border-b border-gray-700 pb-4">
+                  {cfpArticles.map((article) => (
+                    <div key={article.url} className="border-b border-gray-700 pb-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-medium text-gray-100">{news.title}</h3>
+                          <h3 className="font-medium text-gray-100">
+                            <a 
+                              href={article.original_url || article.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              {article.title}
+                            </a>
+                          </h3>
                           <p className="text-sm text-gray-400 mt-1">
-                            {news.source} · {format(news.timestamp, 'HH:mm')}
+                            Citizen Free Press · {format(new Date(article.timestamp), 'MMM d, yyyy HH:mm')}
                           </p>
-                          <p className="text-gray-300 mt-2">{news.summary}</p>
                         </div>
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          news.importance === 'high' 
-                            ? 'bg-red-900 text-red-100' 
-                            : 'bg-yellow-900 text-yellow-100'
-                        }`}>
-                          {news.importance}
-                        </span>
                       </div>
                     </div>
                   ))}
@@ -196,7 +169,8 @@ function App() {
                 </div>
               </div>
 
-              {/* Alerts */}
+              {/* Alerts section commented out */}
+              {/* 
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Recent Alerts</h2>
@@ -219,6 +193,7 @@ function App() {
                   <p className="text-gray-400 text-center py-8">No alerts yet</p>
                 )}
               </div>
+              */}
             </div>
           </div>
         </main>
