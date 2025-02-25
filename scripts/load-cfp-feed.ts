@@ -80,15 +80,15 @@ async function loadCFPFeed() {
     }
 
     // Get final count for summary
-    const { count } = await supabaseAdmin
+    const { data: countData, count: finalCount } = await supabaseAdmin
       .from('articles')
-      .select('count')
-      .eq('category', 'CFP');
+      .select('*', { count: 'exact', head: true })
+      .eq('category', 'CFP')
 
     // Summary
     console.log('\n📊 Load Summary:');
     console.log(`Total Items Retrieved: ${items.length}`);
-    console.log(`Final DB Count: ${count}`);
+    console.log(`Final CFP Articles Count: ${finalCount}`);
     console.log('✅ Feed processing complete\n');
 
   } catch (error) {
