@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
   Bell, 
   BellRing, 
@@ -13,8 +13,9 @@ import {
   BookOpen,
   AlertCircle
 } from 'lucide-react';
-import { useNewsStore } from './lib/store';
-import { format } from 'date-fns';
+import { CFPFeedList } from './components/CFPFeedList';
+// import { useNewsStore } from './lib/store';
+// import { format } from 'date-fns';
 
 const trendingTopics = [
   { topic: "Artificial Intelligence", count: 156 },
@@ -33,12 +34,12 @@ function App() {
   // const [alerts, setAlerts] = useState<string[]>([]);
 
   // Initialize news store
-  const { cfpArticles, isLoadingCFP, fetchCFPNews } = useNewsStore();
+  // const { cfpArticles, isLoadingCFP, fetchCFPNews } = useNewsStore();
 
   // Fetch CFP news on component mount
-  useEffect(() => {
-    fetchCFPNews();
-  }, [fetchCFPNews]);
+  // useEffect(() => {
+  //   fetchCFPNews();
+  // }, [fetchCFPNews]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const NavItem = ({ icon: Icon, label, section }: { icon: any, label: string, section: string }) => (
@@ -54,9 +55,9 @@ function App() {
     </button>
   );
 
-  if (isLoadingCFP) {
-    return <div>Loading news...</div>;
-  }
+  // if (isLoadingCFP) {
+  //   return <div>Loading news...</div>;
+  // }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex">
@@ -125,29 +126,7 @@ function App() {
               {/* Headlines */}
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <h2 className="text-xl font-semibold mb-4">Latest Headlines</h2>
-                <div className="space-y-4">
-                  {cfpArticles.map((article) => (
-                    <div key={article.url} className="border-b border-gray-700 pb-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium text-gray-100">
-                            <a 
-                              href={article.original_url || article.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="hover:underline"
-                            >
-                              {article.title}
-                            </a>
-                          </h3>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Citizen Free Press · {format(new Date(article.timestamp), 'MMM d, yyyy HH:mm')}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <CFPFeedList />
               </div>
             </div>
 

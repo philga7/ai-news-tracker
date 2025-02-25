@@ -1,18 +1,11 @@
 import { create } from 'zustand';
 import { createClient } from '@supabase/supabase-js';
-// import OpenAI from 'openai';
 
 // Initialize Supabase client
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 );
-
-// Initialize OpenAI client
-// const openai = new OpenAI({
-//   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-//   dangerouslyAllowBrowser: true
-// });
 
 interface NewsArticle {
   id: number;
@@ -21,7 +14,7 @@ interface NewsArticle {
   timestamp: Date;
   category: string;
   // importance: 'high' | 'medium' | 'low'; // OpenAI lines (3)
-  // summary: string;
+  summary: string;
   // sentiment?: 'positive' | 'negative' | 'neutral';
   url: string;
   original_url?: string;  // Add this for CFP articles
@@ -34,6 +27,7 @@ interface CFPArticle {
   original_url: string | null;
   timestamp: Date;
   source: string;
+  summary: string;
 }
 
 interface Topic {
@@ -99,7 +93,8 @@ export const useNewsStore = create<NewsStore>((set, get) => ({
         url: article.url,
         original_url: article.original_url,
         timestamp: new Date(article.timestamp),
-        source: article.source
+        source: article.source,
+        summary: article.summary
       }));
   
       set({ 

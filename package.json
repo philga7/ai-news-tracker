@@ -9,15 +9,17 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test-cfp": "tsx scripts/test-cfp-feed.ts",
-    "load-cfp": "tsx scripts/load-cfp-feed.ts"
+    "load-cfp": "tsx scripts/load-cfp-feed.ts",
+    "generate-summary": "tsx scripts/generate-ai-summary.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
+    "@xenova/transformers": "^2.17.2",
     "axios": "^1.7.9",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.344.0",
-    "openai": "^4.28.0",
+    "playwright": "^1.50.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rss-parser": "^3.13.0",
